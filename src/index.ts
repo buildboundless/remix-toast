@@ -101,9 +101,9 @@ export function redirectWithInfo(redirectUrl: string, message: string, init?: Re
   return redirectWithToast(redirectUrl, { message: `${message}`, type: "info" }, init);
 }
 
-export type JsonWithFlashFunction = <Data>(data: Data, flash: FlashSessionValues, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
-export type JsonWithToastFunction = <Data>(data: Data, toast: ToastMessage, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
-export type JsonWithToastMessageFunction = <Data>(data: Data, message: string, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
+export type JsonWithFlashFunction = <Data>(data: Data, flash: FlashSessionValues, init?: ResponseInit) => Promise<TypedResponse<Data>>;
+export type JsonWithToastFunction = <Data>(data: Data, toast: ToastMessage, init?: ResponseInit) => Promise<TypedResponse<Data>>;
+export type JsonWithToastMessageFunction = <Data>(data: Data, message: string, init?: ResponseInit) => Promise<TypedResponse<Data>>;
 
 export const jsonWithFlash: JsonWithFlashFunction = async (data, flash, init,) => {
   return json(data, {
