@@ -71,6 +71,7 @@
   "homepage": "https://github.com/Code-Forge-Net/remix-toast#readme",
   "readme": "https://github.com/Code-Forge-Net/remix-toast#readme",
   "dependencies": {
+    "@remix-run/node": "^2.2.0",
     "zod": "^3.22.3"
   },
   "devDependencies": {

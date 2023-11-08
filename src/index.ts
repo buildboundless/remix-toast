@@ -1,6 +1,7 @@
 import { createCookieSessionStorageFactory, createCookieFactory, redirect } from "@remix-run/server-runtime";
 import { FlashSessionValues, ToastMessage, flashSessionValuesSchema } from "./schema";
 import { sign, unsign } from "./crypto";
+import {json, TypedResponse} from "@remix-run/node";
 
 const FLASH_SESSION = "flash";
 const createCookie = createCookieFactory({ sign, unsign });
@@ -99,6 +100,38 @@ export function redirectWithWarning(redirectUrl: string, message: string, init?:
 export function redirectWithInfo(redirectUrl: string, message: string, init?: ResponseInit) {
   return redirectWithToast(redirectUrl, { message: `${message}`, type: "info" }, init);
 }
+
+export type JsonWithFlashFunction = <Data>(data: Data, flash: FlashSessionValues, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
+export type JsonWithToastFunction = <Data>(data: Data, toast: ToastMessage, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
+export type JsonWithToastMessageFunction = <Data>(data: Data, message: string, init?: number | ResponseInit) => Promise<TypedResponse<Data>>;
+
+export const jsonWithFlash: JsonWithFlashFunction = async (data, flash, init,) => {
+  return json(data, {
+    ...init,
+    headers: await flashMessage(flash, init?.headers),
+  });
+}
+
+export const jsonWithToast: JsonWithToastFunction = async (data, toast, init,) => {
+  return jsonWithFlash(data, {toast}, init)
+}
+
+export const jsonWithSuccess: JsonWithToastMessageFunction = async (data, message, init,) => {
+  return jsonWithToast(data, {message, type: "success"}, init)
+}
+
+export const jsonWithError: JsonWithToastMessageFunction = async (data, message, init,) => {
+  return jsonWithToast(data, {message, type: "error"}, init)
+}
+
+export const jsonWithInfo: JsonWithToastMessageFunction = async (data, message, init,) => {
+  return jsonWithToast(data, {message, type: "info"}, init)
+}
+
+export const jsonWithWarning: JsonWithToastMessageFunction = async (data, message, init,) => {
+  return jsonWithToast(data, {message, type: "warning"}, init)
+}
+
 
 /**
  * Helper method used to get the toast data from the current request and purge the flash storage from the session
